@@ -1,5 +1,6 @@
-import { TableControlNames } from "../enums/table-control-names";
-import { ISelectItems } from "./select-item.interface";
+import { SpSelectItems } from '../enums/sp-select-items';
+import { TableControlNames } from '../enums/table-control-names';
+import { ISelectItem } from './select-item.interface';
 
 export interface IFilterableNavItem {
   key?: number[];
@@ -15,7 +16,7 @@ export interface ITableColWithFilterControl extends ITableColumn {
   controlType: TableControlNames;
   filterMatchMode?: 'equals' | 'contains';
   spName?: SpSelectItems;
-  options?: ISelectItems[];
+  options?: ISelectItem[];
   optionFilter?: string;
 }
 

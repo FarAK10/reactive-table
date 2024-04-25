@@ -3,7 +3,6 @@
   [filterDelay]="1000"
   [columns]="cols"
   [value]="questionList$ | async"
-  (onRowSelect)="onQuestionSelect($event)"
   selectionMode="single"
   [resizableColumns]="true"
   (onLazyLoad)="onLoadLazy($event)"
@@ -16,36 +15,36 @@
   [formGroup]="tableFiltersForm"
   *transloco="let t"
 >
-  <ng-template pTemplate="header" let-columns>
+  <ng-template pTemplate="header">
     <tr>
-      <ng-container *ngFor="let col of columns; trackBy: trackByFieldName">
+      <ng-container *ngFor="let col of cols; trackBy: trackByFieldName">
         <th class="text-center">{{ col.header | transloco }}</th>
       </ng-container>
     </tr>
     <tr>
-      <th *ngFor="let col of columns; trackBy: trackByFieldName; let i = index">
+      <th *ngFor="let col of cols; trackBy: trackByFieldName; let i = index">
         <ng-container [ngSwitch]="col.controlType">
           <ng-container *ngSwitchCase="controlNames.input">
-            <mat-form-field>
-              <input
-                matInput
-                [formControlName]="col.formControlName"
-                [placeholder]="col.header | transloco"
-              />
-            </mat-form-field>
+            <input
+              type="text"
+              pInputText
+              [formControlName]="col.formControlName"
+              [placeholder]="col.header | transloco"
+            />
           </ng-container>
 
           <ng-container *ngSwitchCase="controlNames.select">
-            <mat-form-field>
-              <mat-select [formControlName]="col.formControlName">
-                <mat-option
-                  *ngFor="let selItem of col.options"
-                  [value]="selItem.value"
-                >
-                  {{ selItem.label }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+            <p-dropdown [formControlName]="col.formControlName">
+              <ng-container *ngFor="let selItem of col.options">
+                <p-dropdownItem>{{ selItem.label }}</p-dropdownItem>
+              </ng-container>
+            </p-dropdown>
+
+            <p-dropdown
+              [options]="col.options"
+              [formControlName]="col.formControlName"
+              [optionLabel]="col.header"
+            ></p-dropdown>
           </ng-container>
 
           <ng-container *ngSwitchCase="controlNames.selectWithSearch">

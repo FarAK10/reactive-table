@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ISelectItems } from '../types/interfaces/select-item.interface';
+import { ISelectItem } from '../types/interfaces/select-item.interface';
 import { SpSelectItems } from '../types/enums/sp-select-items';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SpServiceService {
-  spSubjects: ISelectItems[] = [
+  spSubjects: ISelectItem[] = [
     { label: 'Mathematics', value: 101 },
     { label: 'English Literature', value: 102 },
     { label: 'Physics', value: 103 },
@@ -20,7 +20,7 @@ export class SpServiceService {
   ];
   constructor() {}
 
-  getSpSelectItems(sp: SpSelectItems): ISelectItems[] {
+  getSpSelectItems(sp: SpSelectItems): ISelectItem[] {
     let spItems = [];
     switch (sp) {
       case SpSelectItems.subjects:
