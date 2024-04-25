@@ -1,0 +1,103 @@
+<p-table
+  #dt
+  [filterDelay]="1000"
+  [columns]="cols"
+  [value]="questionList$ | async"
+  (onRowSelect)="onQuestionSelect($event)"
+  selectionMode="single"
+  [resizableColumns]="true"
+  (onLazyLoad)="onLoadLazy($event)"
+  dataKey="id"
+  [lazy]="true"
+  [paginator]="true"
+  [rowsPerPageOptions]="[5, 10, 25, 50, 100, 200]"
+  [rows]="10"
+  [totalRecords]="totalItems$ | async"
+  [formGroup]="tableFiltersForm"
+  *transloco="let t"
+>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <ng-container *ngFor="let col of columns; trackBy: trackByFieldName">
+        <th class="text-center">{{ col.header | transloco }}</th>
+      </ng-container>
+    </tr>
+    <tr>
+      <th *ngFor="let col of columns; trackBy: trackByFieldName; let i = index">
+        <ng-container [ngSwitch]="col.controlType">
+          <ng-container *ngSwitchCase="controlNames.input">
+            <mat-form-field>
+              <input
+                matInput
+                [formControlName]="col.formControlName"
+                [placeholder]="col.header | transloco"
+              />
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="controlNames.select">
+            <mat-form-field>
+              <mat-select [formControlName]="col.formControlName">
+                <mat-option
+                  *ngFor="let selItem of col.options"
+                  [value]="selItem.value"
+                >
+                  {{ selItem.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="controlNames.selectWithSearch">
+            <app-select-with-search
+              [formControlName]="col.formControlName"
+              [options]="col.options"
+            ></app-select-with-search>
+          </ng-container>
+        </ng-container>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template let-i="rowIndex" pTemplate="body" let-item let-columns="columns">
+    <tr [pSelectableRow]="item">
+      <ng-container *ngFor="let col of cols; trackBy: trackByFieldName">
+        <td class="text-center">
+          <ng-container [ngSwitch]="col.field">
+            <ng-container *ngSwitchCase="'id'">
+              {{ i + 1 }}
+            </ng-container>
+
+            <ng-container *ngSwitchDefault>
+              {{ item[col.field] }}
+            </ng-container>
+          </ng-container>
+        </td>
+      </ng-container>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-item let-columns="columns" let-i="rowIndex">
+    <tr [pSelectableRow]="item">
+      <ng-container *ngFor="let col of columns; trackBy: trackByFieldName">
+        <td class="text-center">
+          <ng-container [ngSwitch]="col.field">
+            <ng-container *ngSwitchCase="'id'">
+              {{ i + 1 }}
+            </ng-container>
+            <ng-container *ngSwitchCase="'delete'">
+              <app-delete-button
+                (onClick)="deleteCallenge(item)"
+              ></app-delete-button>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              {{ item[col.field] }}
+            </ng-container>
+          </ng-container>
+        </td>
+      </ng-container>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="summary" class="dark:bg-gray-800 dark:text-white">
+    {{ t("shared.totalNumberOfChallenges") }}: {{ totalItems$ | async }}
+  </ng-template>
+</p-table>
