@@ -2,23 +2,21 @@
   #dt
   [filterDelay]="1000"
   [columns]="cols"
-  [value]="questionList$ | async"
+  [value]="items"
   selectionMode="single"
   [resizableColumns]="true"
-  (onLazyLoad)="onLoadLazy($event)"
+  (onLazyLoad)="onLoadLazy($any($event))"
   dataKey="id"
   [lazy]="true"
   [paginator]="true"
   [rowsPerPageOptions]="[5, 10, 25, 50, 100, 200]"
   [rows]="10"
-  [totalRecords]="totalItems$ | async"
-  [formGroup]="tableFiltersForm"
-  *transloco="let t"
+  [formGroup]="filtersForm"
 >
   <ng-template pTemplate="header">
     <tr>
       <ng-container *ngFor="let col of cols; trackBy: trackByFieldName">
-        <th class="text-center">{{ col.header | transloco }}</th>
+        <th class="text-center">{{ col.header }}</th>
       </ng-container>
     </tr>
     <tr>
@@ -29,36 +27,63 @@
               type="text"
               pInputText
               [formControlName]="col.formControlName"
-              [placeholder]="col.header | transloco"
+              [placeholder]="col.header"
             />
           </ng-container>
 
-          <ng-container *ngSwitchCase="controlNames.select">
-            <p-dropdown [formControlName]="col.formControlName">
-              <ng-container *ngFor="let selItem of col.options">
-                <p-dropdownItem>{{ selItem.label }}</p-dropdownItem>
-              </ng-container>
-            </p-dropdown>
+          <ng-container *ngSwitchCase="controlNames.reset">
+            <app-reset-button
+              [isFilterEmpty]="isFilterEmpty$ | async"
+              (onClick)="resetFilters()"
+            ></app-reset-button>
+          </ng-container>
 
+          <ng-container *ngSwitchCase="controlNames.select">
             <p-dropdown
+              appendTo="body"
               [options]="col.options"
               [formControlName]="col.formControlName"
-              [optionLabel]="col.header"
+              optionLabel="label"
+              optionValue="value"
             ></p-dropdown>
           </ng-container>
 
-          <ng-container *ngSwitchCase="controlNames.selectWithSearch">
-            <app-select-with-search
+          <ng-container *ngSwitchCase="controlNames.datepicker">
+            <p-calendar
+              appendTo="body"
               [formControlName]="col.formControlName"
+            ></p-calendar>
+          </ng-container>
+
+          <ng-container *ngSwitchCase="controlNames.selectWithSearch">
+            <p-dropdown
+              appendTo="body"
               [options]="col.options"
-            ></app-select-with-search>
+              [formControlName]="col.formControlName"
+              optionLabel="name"
+              [filter]="true"
+              filterBy="label"
+              [showClear]="true"
+              [placeholder]="col.header"
+            >
+              <ng-template pTemplate="selectedItem" let-selectedOption>
+                <div class="flex align-items-center gap-2">
+                  <div>{{ selectedOption.name }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-country pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ country.name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
           </ng-container>
         </ng-container>
       </th>
-    </tr>
-  </ng-template>
+    </tr></ng-template
+  >
 
-  <ng-template let-i="rowIndex" pTemplate="body" let-item let-columns="columns">
+  <ng-template pTemplate="body" let-item let-i="rowIndex">
     <tr [pSelectableRow]="item">
       <ng-container *ngFor="let col of cols; trackBy: trackByFieldName">
         <td class="text-center">
@@ -66,30 +91,28 @@
             <ng-container *ngSwitchCase="'id'">
               {{ i + 1 }}
             </ng-container>
-
-            <ng-container *ngSwitchDefault>
-              {{ item[col.field] }}
-            </ng-container>
-          </ng-container>
-        </td>
-      </ng-container>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-item let-columns="columns" let-i="rowIndex">
-    <tr [pSelectableRow]="item">
-      <ng-container *ngFor="let col of columns; trackBy: trackByFieldName">
-        <td class="text-center">
-          <ng-container [ngSwitch]="col.field">
-            <ng-container *ngSwitchCase="'id'">
-              {{ i + 1 }}
-            </ng-container>
             <ng-container *ngSwitchCase="'delete'">
               <app-delete-button
-                (onClick)="deleteCallenge(item)"
+                (onClick)="deleteItem(item)"
               ></app-delete-button>
             </ng-container>
+
+            <ng-container *ngSwitchCase="'edit'">
+              <app-edit-button (onClick)="editItem(item)"></app-edit-button>
+            </ng-container>
             <ng-container *ngSwitchDefault>
-              {{ item[col.field] }}
+              <ng-container
+                *ngIf="
+                  col.controlType === controlNames.datepicker;
+                  else default
+                "
+              >
+                {{ item[col.field] | date : col.dateFormat }}
+              </ng-container>
+
+              <ng-template #default>
+                {{ item[col.field] | sp : col.spName }}
+              </ng-template>
             </ng-container>
           </ng-container>
         </td>
@@ -97,6 +120,6 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="summary" class="dark:bg-gray-800 dark:text-white">
-    {{ t("shared.totalNumberOfChallenges") }}: {{ totalItems$ | async }}
+    {{ totalItemsLabel }}: {{ totalItems }}
   </ng-template>
 </p-table>

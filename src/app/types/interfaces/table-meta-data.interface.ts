@@ -1,10 +1,10 @@
 export class TableMetaData {
-  filters?: string | undefined;
+  filters?: string;
   first!: number;
   rows!: number;
-  sortField?: string | undefined;
+  sortField?: string;
   sortOrder!: number;
-  filterHandle?: string | undefined;
-  tagHandle?: string | undefined;
-  globalFilter?: string | undefined;
+  filterHandle?: string;
+  tagHandle?: string;
+  globalFilter?: string;
 }

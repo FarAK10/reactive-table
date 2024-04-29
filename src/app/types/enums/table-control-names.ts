@@ -5,4 +5,5 @@ export enum TableControlNames {
   datepicker = 'datepicker',
   selectWithSearch = 'selectWithSearch',
   multiSelect = 'multiSelect',
+  reset = 'reset',
 }

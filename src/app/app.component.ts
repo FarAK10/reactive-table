@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
 import { TableWrapperModule } from './components/table-wrapper/table-wrapper.module';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 @Component({
   selector: 'app-root',
   standalone: true,

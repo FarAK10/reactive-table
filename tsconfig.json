@@ -4,9 +4,10 @@
 
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
-    "strict": true,
+    "strict": false,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
+    "noImplicitAny": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
@@ -24,7 +25,6 @@
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": true,
 
-    "enableI18nLegacyMessageIdFormat": false,
     // "fullTemplateTypeCheck": false,
     "strictInjectionParameters": false,
     "strictTemplates": true

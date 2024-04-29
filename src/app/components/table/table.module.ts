@@ -8,6 +8,11 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DeleteButtonModule } from '../delete-button/delete-button.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslocoModule } from '@ngneat/transloco';
+import { EditButtonModule } from '../edit-button/edit-button.module';
+import { SpModule } from '../../pipes/sp.module';
+import { DialogModule } from 'primeng/dialog';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ResetButtonModule } from '../reset-button/reset-button.module';
 
 @NgModule({
   imports: [
@@ -18,7 +23,12 @@ import { TranslocoModule } from '@ngneat/transloco';
     DropdownModule,
     DeleteButtonModule,
     ReactiveFormsModule,
-    TranslocoModule,
+    EditButtonModule,
+    DialogModule,
+    SpModule,
+    OverlayPanelModule,
+    CalendarModule,
+    ResetButtonModule,
   ],
   declarations: [TableComponent],
   exports: [TableComponent],

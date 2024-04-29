@@ -18,6 +18,7 @@ export interface ITableColWithFilterControl extends ITableColumn {
   spName?: SpSelectItems;
   options?: ISelectItem[];
   optionFilter?: string;
+  dateFormat?: string;
 }
 
 export interface IDynamicTableColumn extends ITableColWithFilterControl {

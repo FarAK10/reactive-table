@@ -21,7 +21,7 @@ export class SpServiceService {
   constructor() {}
 
   getSpSelectItems(sp: SpSelectItems): ISelectItem[] {
-    let spItems = [];
+    let spItems: ISelectItem[] = [];
     switch (sp) {
       case SpSelectItems.subjects:
         spItems = this.spSubjects;

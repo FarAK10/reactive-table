@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ISelectItems } from '../types/interfaces/select-item.interface';
 import { SpSelectItems } from '../types/enums/sp-select-items';
 import { SpServiceService } from '../services/SpService.service';
 
@@ -31,9 +30,9 @@ export class SpPipe implements PipeTransform {
       const result = this.spService.getSpLabelByValue(spSelectItem, spValue);
 
       this.cacheObj[cacheKey] = result;
+
       return result;
     }
-
     return spValue;
   }
 }

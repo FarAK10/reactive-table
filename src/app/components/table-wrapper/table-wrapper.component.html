@@ -1,1 +1,11 @@
-<app-table></app-table>
+<app-table
+  [items]="items$ | async"
+  [totalItems]="totalItems$ | async"
+  [tableCols]="cols"
+  [enableDelete]="true"
+  [enableEdit]="true"
+  [showResetFilters]="true"
+  (onMetaDataChange)="onMetaDataChange($event)"
+  (onDeleteItem)="deleteItem($event)"
+  (onEditItem)="editItem($event)"
+></app-table>

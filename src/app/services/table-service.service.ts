@@ -4,6 +4,7 @@ import { ISelectItem } from '../types/interfaces/select-item.interface';
 import { SpServiceService } from './SpService.service';
 import { TableMetaData } from '../types/interfaces/table-meta-data.interface';
 import { DatePipe } from '@angular/common';
+import { TableControlNames } from '../types/enums/table-control-names';
 @Injectable({
   providedIn: 'root',
 })
@@ -59,7 +60,7 @@ export class TableServiceService {
     fieldName: string,
     tableMetaData: TableMetaData
   ): TableMetaData {
-    delete tableMetaData.filters[fieldName];
+    delete tableMetaData?.filters?.[fieldName];
     return tableMetaData;
   }
   stringifyTableMetaFilters(tableMetaData: TableMetaData): TableMetaData {
@@ -108,5 +109,35 @@ export class TableServiceService {
       }
       return col;
     });
+  }
+
+  updateColumns(
+    cols: ITableColWithFilterControl[],
+    field: string,
+    header: string,
+    add: boolean,
+    controlName: TableControlNames = null
+  ): ITableColWithFilterControl[] {
+    const hasColumn = cols.some((col) => col.field === field);
+
+    if (add && !hasColumn) {
+      let result: ITableColWithFilterControl[] = [];
+      const column: ITableColWithFilterControl = {
+        field,
+        header,
+        controlType: controlName,
+        formControlName: null,
+      };
+      if (controlName === TableControlNames.reset) {
+        result = [column, ...cols];
+      } else {
+        result = [...cols, column];
+      }
+
+      return result;
+    } else if (!add && hasColumn) {
+      return cols.filter((col) => col.field !== field);
+    }
+    return cols;
   }
 }

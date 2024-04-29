@@ -1,0 +1,8 @@
+<button class="icon-btn" (click)="onPress()">
+  <ng-container *ngIf="isFilterEmpty; else splash">
+    <i class="pi pi-filter"></i> <span>{{ text }}</span></ng-container
+  >
+</button>
+<ng-template #splash>
+  <i class="pi pi-filter-slash"></i> <span>{{ text }}</span>
+</ng-template>
