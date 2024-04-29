@@ -1,27 +1,98 @@
-# ReactiveTable
+# Reactive Forms with Filter - Angular Table Wrapper Component
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.5.
+## Overview
 
-## Development server
+This Angular component serves as a wrapper for a shared table component, facilitating the development of reactive forms with filtering capabilities. It leverages RxJS observables and Angular services to manage table data and interactions.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Components and Services
 
-## Code scaffolding
+- **TableWrapperComponent**:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+  - Acts as a container for the shared table component.
+  - Manages table metadata and data retrieval.
+  - Handles CRUD operations on table items.
 
-## Build
+- **Shared Table Component**:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+  - Displays tabular data with support for pagination, sorting, and filtering.
+  - Provides options for deleting and editing table items.
 
-## Running unit tests
+- **TableServiceService**:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+  - Provides methods for managing table metadata and interacting with the table data source.
 
-## Running end-to-end tests
+- **MockApiClientService**:
+  - Mock service used for fetching mock data.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Features
 
-## Further help
+- Dynamically load and display tabular data.
+- Allow users to edit and delete table items.
+- Update table metadata based on user interactions.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Usage
+
+1. Import the `TableWrapperComponent` into your Angular application.
+2. Configure the component with appropriate inputs and outputs.
+3. Implement custom logic for handling table metadata changes, item deletion, and item editing.
+4. Integrate the component into your application templates.
+
+## Example
+
+```typescript
+import { Component, OnInit } from "@angular/core";
+import { BehaviorSubject, map, share, Subject, switchMap } from "rxjs";
+import { TableMetaData } from "../../types/interfaces/table-meta-data.interface";
+import { TableServiceService } from "../../services/table-service.service";
+import { MockApiClientService } from "../../services/mock-api-client.service";
+import { cols } from "./data/table-columns";
+import { IStudentDTO } from "../../types/interfaces/mock-response.interface";
+
+@Component({
+  selector: "app-table-wrapper",
+  templateUrl: "./table-wrapper.component.html",
+  styleUrls: ["./table-wrapper.component.scss"],
+})
+export class TableWrapperComponent implements OnInit {
+  cols = cols;
+  metaData$ = new BehaviorSubject<TableMetaData>(this.tableService.getDefaultTableMeta(false));
+  res$ = this.metaData$.pipe(
+    switchMap((metaData) => this.mockApiClient.getAll(metaData)),
+    share()
+  );
+
+  items$ = this.res$.pipe(map((res) => res.items));
+
+  totalItems$ = this.res$.pipe(map((res) => res.total));
+  constructor(private tableService: TableServiceService, private mockApiClient: MockApiClientService) {}
+
+  ngOnInit() {}
+
+  onMetaDataChange(metaData: TableMetaData) {
+    alert(`metaData changed ${JSON.stringify(metaData)}`);
+    this.metaData$.next(metaData);
+  }
+
+  deleteItem(item: IStudentDTO) {
+    alert(`delete ${item.firstName} ${item.lastName}?`);
+  }
+
+  editItem(item: IStudentDTO) {
+    alert(`edit  ${item.firstName} ${item.lastName}?`);
+  }
+}
+```
+
+```HTML
+<app-table
+  [items]="items$ | async"
+  [totalItems]="totalItems$ | async"
+  [tableCols]="cols"
+  [enableDelete]="true"
+  [enableEdit]="true"
+  [showResetFilters]="true"
+  (onMetaDataChange)="onMetaDataChange($event)"
+  (onDeleteItem)="deleteItem($event)"
+  (onEditItem)="editItem($event)"
+></app-table>
+```
