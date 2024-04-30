@@ -135,7 +135,9 @@ export class TableComponent implements OnInit {
     this.onDeleteItem.emit(item);
   }
 
-  onLoadLazy(tableMeta: TableMetaData) {}
+  onLoadLazy(tableMeta: TableMetaData) {
+    this.tableMeta$.next(tableMeta);
+  }
 
   resetFilters() {
     this.filtersForm.reset();
